@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCENE 03 — BEHAVIORAL EXTRACTION SYSTEM</title>
+<style>
+/* ── RESET & BASE ──────────────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; background: #02000a; overflow: hidden; }
+
+/* ── MAIN CONTAINER ────────────────────────────────────────────── */
+#s3 {
+  position: relative;
+  width: 100vw; height: 100vh;
+  background: #02000a;
+  overflow: hidden;
+  cursor: none;
+  font-family: 'Courier New', monospace;
+}
+#c { display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+/* ── LEFT SCAN PANEL ───────────────────────────────────────────── */
+#scan-panel {
+  position: absolute; left: 22px; top: 50%; transform: translateY(-50%);
+  width: 172px; pointer-events: none;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.sp-block {
+  border: 0.5px solid #7700cc55;
+  background: rgba(40, 0, 60, 0.55);
+  padding: 9px 11px;
+}
+.sp-label  { font-size: 9px; letter-spacing: .2em; color: #aa44ff99; margin-bottom: 5px; text-transform: uppercase; }
+.sp-value  { font-size: 12px; letter-spacing: .12em; color: #cc88ff; font-weight: bold; }
+.sp-bar-wrap { width: 100%; height: 3px; background: #33004422; margin-top: 5px; }
+.sp-bar    { height: 100%; background: linear-gradient(90deg, #6600cc, #ff44aa); transition: width .6s; }
+.sp-micro  { font-size: 9px; color: #7700cc88; letter-spacing: .13em; margin-top: 4px; }
+#scan-canvas { width: 100%; height: 80px; display: block; margin-top: 2px; }
+.sp-list   { list-style: none; }
+.sp-list li {
+  font-size: 9px; letter-spacing: .13em; color: #8833cc66;
+  border-left: 1.5px solid #6600cc44;
+  padding-left: 6px; margin-bottom: 5px; line-height: 1.5;
+}
+.sp-list li.active { color: #cc88ffcc; border-left-color: #aa44ff; }
+
+/* ── RIGHT PANEL ───────────────────────────────────────────────── */
+#right-panel {
+  position: absolute; right: 22px; top: 50%; transform: translateY(-50%);
+  width: 164px; pointer-events: none;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.rp-block     { border: 0.5px solid #ff448833; background: rgba(50, 0, 30, 0.55); padding: 9px 11px; }
+.rp-label     { font-size: 9px; letter-spacing: .2em; color: #ff448877; margin-bottom: 5px; }
+.rp-value     { font-size: 14px; letter-spacing: .08em; color: #ff88cc; font-weight: bold; }
+.rp-sub       { font-size: 9px; color: #cc446688; letter-spacing: .12em; margin-top: 2px; }
+.rp-meter     { width: 100%; height: 2px; background: #33001122; margin-top: 6px; }
+.rp-meter-fill { height: 100%; background: #ff4488; transition: width .6s; }
+
+.collected-list    { list-style: none; margin-top: 2px; }
+.collected-list li {
+  font-size: 9px; letter-spacing: .15em; color: #ff448844;
+  padding: 3px 0; border-bottom: 0.5px solid #ff448811; transition: color .4s;
+}
+.collected-list li.done { color: #ff88cccc; }
+
+/* ── SESSION METRICS (right panel) ─────────────────────────────── */
+.session-metrics {
+  font-size: 9px; color: #ff448866; letter-spacing: .11em; line-height: 2.0;
+}
+.session-metrics span { color: #ff88cc; }
+.archive-value { font-size: 10px; color: #cc66ff; }
+
+/* ── HUD CORNERS ───────────────────────────────────────────────── */
+.hud { position: absolute; pointer-events: none; font-size: 9px; letter-spacing: .13em; line-height: 1.85; }
+#htl { top: 16px;    left: 22px;  color: #8833cc77; }
+#htr { top: 16px;    right: 22px; text-align: right; color: #ff448866; }
+#hbl { bottom: 18px; left: 22px;  color: #8833cc66; }
+#hbr { bottom: 18px; right: 22px; text-align: right; color: #ff448855; }
+
+.hud-highlight-purple { color: #cc88ff; }
+.hud-highlight-pink   { color: #ff88cc; }
+.hud-highlight-red    { color: #ff4466; }
+.hud-highlight-violet { color: #aa66ff; }
+
+/* ── STATUS BAR ────────────────────────────────────────────────── */
+#sbar {
+  position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+  font-size: 9px; letter-spacing: .2em; color: #aa44ff55;
+  pointer-events: none; white-space: nowrap;
+}
+
+/* ── CROSSHAIR (mouse cursor) ──────────────────────────────────── */
+#ch {
+  position: absolute; pointer-events: none;
+  width: 28px; height: 28px; transform: translate(-50%, -50%);
+}
+#ch::before, #ch::after { content: ''; position: absolute; background: #aa44ff66; }
+#ch::before { top: 50%; left: 0; right: 0; height: .5px; transform: translateY(-50%); }
+#ch::after  { left: 50%; top: 0; bottom: 0; width: .5px; transform: translateX(-50%); }
+.chc { position: absolute; width: 6px; height: 6px; border-color: #aa44ffaa; border-style: solid; }
+.ctl { top: 0;    left: 0;  border-width: 1px 0 0 1px; }
+.ctr { top: 0;    right: 0; border-width: 1px 1px 0 0; }
+.cbl { bottom: 0; left: 0;  border-width: 0 0 1px 1px; }
+.cbr { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
+
+/* ── CAMERA / HAND TRACKING ────────────────────────────────────── */
+#cam-wrap {
+  position: absolute; bottom: 18px; right: 22px;
+  pointer-events: none; z-index: 10;
+}
+#cam-video   { display: none; }
+#cam-preview { width: 96px; height: 72px; border: 0.5px solid #aa44ff44; opacity: 0.55; transform: scaleX(-1); }
+#input-mode {
+  position: absolute; bottom: 4px; right: 22px;
+  font-size: 8px; letter-spacing: .18em; color: #aa44ff66;
+  pointer-events: none; white-space: nowrap; margin-top: 4px;
+}
+
+/* ── HAND DOT (hand-tracking cursor) ──────────────────────────── */
+#hand-dot {
+  position: absolute; width: 18px; height: 18px;
+  pointer-events: none; transform: translate(-50%, -50%); display: none;
+}
+#hand-dot::before, #hand-dot::after { content: ''; position: absolute; background: #ff44aacc; }
+#hand-dot::before { top: 50%; left: 0; right: 0; height: .5px; transform: translateY(-50%); }
+#hand-dot::after  { left: 50%; top: 0; bottom: 0; width: .5px; transform: translateX(-50%); }
+.hd-ring {
+  position: absolute; width: 18px; height: 18px;
+  border: 1px solid #ff44aa88; border-radius: 50%; top: 0; left: 0;
+}
+
+/* ── GESTURE GUIDE ─────────────────────────────────────────────── */
+#gesture-guide {
+  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+  pointer-events: none; display: flex; gap: 32px; align-items: flex-end;
+}
+.gesture-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.gesture-divider { width: 0.5px; height: 40px; background: #aa44ff22; margin-bottom: 24px; }
+.gesture-label {
+  font-size: 8px; letter-spacing: .15em; color: #aa44ff88;
+  text-align: center; line-height: 1.6;
+}
+.gesture-label span { color: #ff44aaaa; }
+</style>
+</head>
+<body>
+<div id="s3">
+
+  <!-- ── 3D CANVAS ───────────────────────────────────────────── -->
+  <canvas id="c"></canvas>
+
+  <!-- ── LEFT SCAN PANEL ─────────────────────────────────────── -->
+  <div id="scan-panel">
+    <div class="sp-block">
+      <div class="sp-label">SUBJECT SCAN</div>
+      <canvas id="scan-canvas"></canvas>
+      <div class="sp-micro">NEURAL_SIGNATURE: ACTIVE</div>
+    </div>
+    <div class="sp-block">
+      <div class="sp-label">BEHAVIORAL INDEX</div>
+      <div class="sp-value" id="beh-idx">0.000</div>
+      <div class="sp-bar-wrap"><div class="sp-bar" id="beh-bar" style="width:0%"></div></div>
+      <div class="sp-micro">THRESHOLD: 0.720</div>
+    </div>
+    <div class="sp-block">
+      <div class="sp-label">ACTIVE VECTORS</div>
+      <ul class="sp-list" id="vec-list">
+        <li class="active">OCULAR FIXATION</li>
+        <li class="active">DWELL_PATTERN</li>
+        <li>MICRO_EXPRESSION</li>
+        <li>PROXIMITY INDEX</li>
+        <li>GAZE VELOCITY</li>
+      </ul>
+    </div>
+    <div class="sp-block">
+      <div class="sp-label">SIGNAL CONFIDENCE</div>
+      <div class="sp-value"><span id="sig-conf">--</span>%</div>
+      <div class="sp-bar-wrap"><div class="sp-bar" id="sig-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ─────────────────────────────────────────── -->
+  <div id="right-panel">
+    <div class="rp-block">
+      <div class="rp-label">EXTRACTION STATUS</div>
+      <div class="rp-value"><span id="tc">0</span>/6</div>
+      <div class="rp-sub">TARGETS ACQUIRED</div>
+      <div class="rp-meter"><div class="rp-meter-fill" id="ext-meter" style="width:0%"></div></div>
+    </div>
+    <div class="rp-block">
+      <div class="rp-label">EXTRACTED MARKERS</div>
+      <ul class="collected-list" id="col-list"></ul>
+    </div>
+    <div class="rp-block">
+      <div class="rp-label">SESSION METRICS</div>
+      <div class="session-metrics">
+        DWELL: <span id="dt">00:00</span><br>
+        ROTATION: <span id="rx">000</span>°<br>
+        FRAME: <span id="fr">0000</span><br>
+        NODES: <span>950</span>
+      </div>
+    </div>
+    <div class="rp-block">
+      <div class="rp-label">ARCHIVE NODE</div>
+      <div class="rp-value archive-value">192.168.0.1</div>
+      <div class="rp-sub">UPLINK: ESTABLISHED</div>
+    </div>
+  </div>
+
+  <!-- ── HUD CORNERS ─────────────────────────────────────────── -->
+  <div class="hud" id="htl">
+    BEHAVIORAL_EXTRACTION_SYS<br>
+    CORE v3.3.0 — SCENE_03<br>
+    STATUS: <span class="hud-highlight-purple">SCANNING</span>
+  </div>
+  <div class="hud" id="htr">
+    SUBJECT: VIEWER_01<br>
+    PROFILE: <span id="prof-st" class="hud-highlight-pink">BUILDING</span><br>
+    RISK: <span class="hud-highlight-red">LOW</span>
+  </div>
+  <div class="hud" id="hbl">
+    STREAM_IN: <span class="hud-highlight-violet">LIVE</span><br>
+    LATENCY: 4ms
+  </div>
+  <div class="hud" id="hbr">
+    MODE: VOLUMETRIC<br>
+    LAYER: <span id="lay-n" class="hud-highlight-pink">03</span>
+  </div>
+
+  <!-- ── STATUS BAR ──────────────────────────────────────────── -->
+  <div id="sbar">DRAG TO ROTATE GLOBE — HOVER TARGET NODE TO EXTRACT SIGNATURE</div>
+
+  <!-- ── GESTURE GUIDE ───────────────────────────────────────── -->
+  <div id="gesture-guide">
+    <div class="gesture-item">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="24" cy="38" rx="10" ry="6" fill="none" stroke="#aa44ff44" stroke-width="0.8"/>
+        <path d="M14 34 Q11 30 12 26 Q13 23 15 24" fill="none" stroke="#aa44ff55" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M20 32 Q19 24 20 16 Q21 10 24 9" fill="none" stroke="#aa44ffcc" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="24" cy="9" r="2.5" fill="#aa44ffaa"/>
+        <path d="M24 32 Q24 26 25 22 Q26 19 27 20" fill="none" stroke="#aa44ff44" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M28 33 Q29 28 29 25" fill="none" stroke="#aa44ff33" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M31 34 Q32 30 32 28" fill="none" stroke="#aa44ff22" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="24" y1="5" x2="24" y2="2" stroke="#ff44aa88" stroke-width="0.8" stroke-dasharray="1,1"/>
+        <circle cx="24" cy="1" r="1" fill="#ff44aa88"/>
+      </svg>
+      <div class="gesture-label">INDEX FINGER<br><span>HOVER = SELECT</span></div>
+    </div>
+    <div class="gesture-divider"></div>
+    <div class="gesture-item">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="24" cy="38" rx="10" ry="6" fill="none" stroke="#aa44ff44" stroke-width="0.8"/>
+        <path d="M14 34 Q12 29 14 24 Q16 20 19 18" fill="none" stroke="#aa44ffcc" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="19" cy="18" r="2.5" fill="#aa44ffaa"/>
+        <path d="M20 32 Q19 25 20 18 Q21 13 22 12" fill="none" stroke="#aa44ffcc" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="22" cy="12" r="2.5" fill="#aa44ffaa"/>
+        <line x1="19" y1="18" x2="22" y2="12" stroke="#ff44aacc" stroke-width="1" stroke-dasharray="2,1"/>
+        <path d="M24 32 Q25 26 25 22" fill="none" stroke="#aa44ff44" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M28 33 Q29 28 29 26" fill="none" stroke="#aa44ff33" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M31 34 Q32 30 32 28" fill="none" stroke="#aa44ff22" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M6 24 Q8 18 14 15" fill="none" stroke="#ff44aa66" stroke-width="0.8" stroke-dasharray="2,2"/>
+        <polygon points="14,12 14,17 18,14" fill="#ff44aa66"/>
+      </svg>
+      <div class="gesture-label">PINCH GESTURE<br><span>DRAG = ROTATE</span></div>
+    </div>
+  </div>
+
+  <!-- ── HAND TRACKING OVERLAY ───────────────────────────────── -->
+  <div id="cam-wrap"><canvas id="cam-preview"></canvas></div>
+  <div id="input-mode">INPUT: MOUSE</div>
+  <div id="hand-dot"><div class="hd-ring"></div></div>
+
+  <!-- ── CROSSHAIR ───────────────────────────────────────────── -->
+  <div id="ch">
+    <div class="chc ctl"></div><div class="chc ctr"></div>
+    <div class="chc cbl"></div><div class="chc cbr"></div>
+  </div>
+
+</div>
+
+<!-- ── EXTERNAL DEPENDENCIES ───────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+(function () {
+
+/* ================================================================
+   1. SCENE SETUP
+   ================================================================ */
+const wrap = document.getElementById('s3');
+
+function getWH() { return { W: wrap.offsetWidth, H: wrap.offsetHeight }; }
+let { W, H } = getWH();
+
+const mainCanvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas: mainCanvas, alpha: false, antialias: true });
+renderer.setSize(W, H);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setClearColor(0x02000a, 1);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x02000a, 0.022);
+
+const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 200);
+camera.position.set(0, 0, 7.5);
+
+/* ================================================================
+   2. CONSTANTS
+   ================================================================ */
+const LIGHT_DIR = new THREE.Vector3(0.6, 0.5, 1.0).normalize();
+const RADIUS = 2.3;
+const N = 950;
+const GLYPHS = '01アイウエオカキクケコサシスセタナニヌ∅∑∆∇∈⊕⊗∞∮ABCDEFGHabcdef0123456789#$%&@<>[]{}|';
+
+const TARGETS = [
+  { label: 'ATTENTION', color: '#ffffff', glow: 'rgba(255,255,255,0.75)' },
+  { label: 'REACTION',  color: '#cc88ff', glow: 'rgba(170,80,255,0.7)' },
+  { label: 'DWELL',     color: '#ff44aa', glow: 'rgba(255,60,160,0.65)' },
+  { label: 'PATTERN',   color: '#ff9955', glow: 'rgba(255,130,60,0.6)' },
+  { label: '87',        color: '#88ddff', glow: 'rgba(80,200,255,0.65)' },
+  { label: '42',        color: '#aa77ff', glow: 'rgba(150,90,255,0.65)' },
+];
+const TARGET_COLORS = [
+  { r: 255, g: 255, b: 255 }, { r: 200, g: 130, b: 255 },
+  { r: 255, g: 68,  b: 170 }, { r: 255, g: 148, b: 68 },
+  { r: 120, g: 220, b: 255 }, { r: 160, g: 110, b: 255 },
+];
+
+/* ================================================================
+   3. TEXTURE HELPERS
+   ================================================================ */
+const texCache = {};
+
+function makeCharTex(char, sz) {
+  const key = 'W|' + char + '|' + sz;
+  if (texCache[key]) return texCache[key];
+
+  const cs = Math.ceil(sz * 3);
+  const cv = document.createElement('canvas');
+  cv.width = cs; cv.height = cs;
+
+  const cx = cv.getContext('2d');
+  cx.font = `${Math.ceil(cs * 0.65)}px Courier New`;
+  cx.fillStyle = '#ffffff';
+  cx.textAlign = 'center';
+  cx.textBaseline = 'middle';
+  cx.fillText(char, cs / 2, cs / 2);
+
+  const tex = new THREE.CanvasTexture(cv);
+  texCache[key] = tex;
+  return tex;
+}
+
+function makeWordTex(word, color, glow, charH) {
+  const cv = document.createElement('canvas');
+  cv.width = Math.ceil(word.length * charH * 1.72 + 14);
+  cv.height = Math.ceil(charH * 2.6);
+
+  const cx = cv.getContext('2d');
+  cx.clearRect(0, 0, cv.width, cv.height);
+
+  // glow pass
+  cx.shadowColor = glow;
+  cx.shadowBlur = charH * 0.85;
+  cx.font = `bold ${Math.ceil(charH * 1.72)}px Courier New`;
+  cx.fillStyle = glow;
+  cx.textAlign = 'center';
+  cx.textBaseline = 'middle';
+  cx.fillText(word, cv.width / 2, cv.height / 2);
+
+  // crisp pass
+  cx.shadowBlur = 0;
+  cx.fillStyle = color;
+  cx.fillText(word, cv.width / 2, cv.height / 2);
+
+  return new THREE.CanvasTexture(cv);
+}
+
+/* ================================================================
+   4. GEOMETRY HELPERS
+   ================================================================ */
+function fibSphere(n, r) {
+  const pts = [];
+  const phi = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < n; i++) {
+    const y = 1 - (i / (n - 1)) * 2;
+    const rad = Math.sqrt(1 - y * y);
+    const theta = phi * i;
+    pts.push(new THREE.Vector3(r * rad * Math.cos(theta), r * y, r * rad * Math.sin(theta)));
+  }
+  return pts;
+}
+
+function rndInSphere(r) {
+  const u = Math.random(), v = Math.random();
+  const th = 2 * Math.PI * u;
+  const ph = Math.acos(2 * v - 1);
+  const rr = r * Math.cbrt(Math.random()) * (0.25 + Math.random() * 0.75);
+  return new THREE.Vector3(
+    rr * Math.sin(ph) * Math.cos(th),
+    rr * Math.sin(ph) * Math.sin(th),
+    rr * Math.cos(ph)
+  );
+}
+
+/* ================================================================
+   5. BUILD PARTICLE GLOBE
+   ================================================================ */
+const surfPts  = fibSphere(Math.floor(N * 0.68), RADIUS);
+const innerPts = Array.from({ length: Math.floor(N * 0.32) }, () => rndInSphere(RADIUS));
+const allPts   = [...surfPts, ...innerPts];
+
+const group = new THREE.Group();
+scene.add(group);
+
+function pickCol() {
+  const r = Math.random();
+  if (r < 0.55) return { r: 0, g: 255, b: 65 };
+  if (r < 0.80) return { r: 0, g: 200, b: 50 };
+  return { r: 0, g: 140, b: 35 };
+}
+
+const particles = [];
+allPts.forEach(pt => {
+  const char = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+  const sz   = 26 + Math.random() * 10;
+  const tex  = makeCharTex(char, sz);
+  const col  = pickCol();
+  const mat  = new THREE.SpriteMaterial({
+    map: tex, transparent: true, depthWrite: false, depthTest: true,
+    color: new THREE.Color(col.r / 255, col.g / 255, col.b / 255),
+  });
+  const sp = new THREE.Sprite(mat);
+  const bs = 0.13 + Math.random() * 0.07;
+  sp.scale.set(bs, bs, bs);
+  sp.position.copy(pt);
+  group.add(sp);
+  particles.push({ sp, mat, localPos: pt.clone(), driftOff: Math.random() * 6.28, baseColor: col, baseScale: bs });
+});
+
+/* ================================================================
+   6. BUILD TARGET SPRITES
+   ================================================================ */
+const targetSprites = [];
+const colList = document.getElementById('col-list');
+
+TARGETS.forEach((t, ti) => {
+  const idx = Math.floor((ti / TARGETS.length) * surfPts.length) + 40;
+  const pt  = surfPts[idx];
+  const tex = makeWordTex(t.label, t.color, t.glow, 13);
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, depthTest: true });
+  const sp  = new THREE.Sprite(mat);
+
+  const aspect = tex.image.width / tex.image.height;
+  const h = 0.17;
+  sp.scale.set(h * aspect, h, h);
+  sp.position.copy(pt);
+  group.add(sp);
+
+  const li = document.createElement('li');
+  li.textContent = '[ ' + t.label + ' ]';
+  colList.appendChild(li);
+
+  targetSprites.push({
+    sp, mat, localPos: pt.clone(), driftOff: Math.random() * 6.28,
+    baseColor: TARGET_COLORS[ti], baseScale: h, aspect, data: t,
+    hover: 0, collected: false, li,
+  });
+});
+
+/* ================================================================
+   7. ORBITAL RINGS
+   ================================================================ */
+function makeRing(tiltX, tiltZ, opacity, seg) {
+  const pts = [];
+  for (let i = 0; i <= seg; i++) {
+    const a = (i / seg) * Math.PI * 2;
+    pts.push(new THREE.Vector3(Math.cos(a) * RADIUS * 1.01, 0, Math.sin(a) * RADIUS * 1.01));
+  }
+  const geo  = new THREE.BufferGeometry().setFromPoints(pts);
+  const mat  = new THREE.LineBasicMaterial({ color: 0x8833ff, transparent: true, opacity, depthWrite: false });
+  const ring = new THREE.Line(geo, mat);
+  ring.rotation.x = tiltX;
+  ring.rotation.z = tiltZ;
+  return ring;
+}
+
+group.add(makeRing(0, 0, 0.10, 96));
+group.add(makeRing(Math.PI * 0.28, 0, 0.07, 80));
+group.add(makeRing(Math.PI * 0.5, Math.PI * 0.18, 0.07, 80));
+group.add(makeRing(Math.PI * 0.5, 0, 0.06, 80));
+
+/* ================================================================
+   8. LIGHTING — per-frame face/backface shading
+   ================================================================ */
+const _wpos   = new THREE.Vector3();
+const _camDir = new THREE.Vector3();
+
+function updateLighting() {
+  _camDir.set(0, 0, -1).applyQuaternion(camera.quaternion);
+
+  particles.forEach(p => {
+    p.sp.getWorldPosition(_wpos);
+    const nx = _wpos.x / RADIUS, ny = _wpos.y / RADIUS, nz = _wpos.z / RADIUS;
+
+    const camDot  = nx * _camDir.x + ny * _camDir.y + nz * _camDir.z;
+    const camF    = Math.max(0, (camDot + 0.35) / 1.35);
+    const camFS   = Math.pow(camF, 1.6);
+    const litDot  = nx * LIGHT_DIR.x + ny * LIGHT_DIR.y + nz * LIGHT_DIR.z;
+    const litF    = Math.max(0, litDot * 0.5 + 0.5);
+    const combined = camFS * (0.3 + 0.7 * litF);
+
+    p.mat.opacity = 0.14 + combined * 0.86;
+    const s = p.baseScale * (0.88 + camFS * 0.28);
+    p.sp.scale.set(s, s, s);
+    const br = 0.55 + combined * 0.75;
+    p.mat.color.setRGB((p.baseColor.r / 255) * br, (p.baseColor.g / 255) * br, (p.baseColor.b / 255) * br);
+  });
+
+  targetSprites.forEach(ts => {
+    if (ts.collected) return;
+    ts.sp.getWorldPosition(_wpos);
+    const nx = _wpos.x / RADIUS, ny = _wpos.y / RADIUS, nz = _wpos.z / RADIUS;
+
+    const camDot  = nx * _camDir.x + ny * _camDir.y + nz * _camDir.z;
+    const camF    = Math.max(0, (camDot + 0.35) / 1.35);
+    const camFS   = Math.pow(camF, 1.4);
+    const litDot  = nx * LIGHT_DIR.x + ny * LIGHT_DIR.y + nz * LIGHT_DIR.z;
+    const litF    = Math.max(0, litDot * 0.4 + 0.6);
+    const combined = camFS * (0.4 + 0.6 * litF);
+
+    ts.mat.opacity = 0.05 + combined * 0.95;
+    const h = ts.baseScale * (1 + ts.hover * 0.12);
+    ts.sp.scale.set(h * ts.aspect, h, h);
+  });
+}
+
+/* ================================================================
+   9. WEB AUDIO — CYBER SOUND ENGINE
+   ================================================================ */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+
+function ensureAudio() {
+  if (!actx) actx = new AudioCtx();
+  if (actx.state === 'suspended') actx.resume();
+}
+
+function startAmbientHum() {
+  ensureAudio();
+  const osc    = actx.createOscillator();
+  const gain   = actx.createGain();
+  const filter = actx.createBiquadFilter();
+
+  osc.type = 'sawtooth';
+  osc.frequency.value = 55;
+  filter.type = 'lowpass';
+  filter.frequency.value = 180;
+  filter.Q.value = 8;
+  gain.gain.value = 0.04;
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(actx.destination);
+  osc.start();
+
+  // slow pulse modulation
+  const lfo     = actx.createOscillator();
+  const lfoGain = actx.createGain();
+  lfo.frequency.value = 0.25;
+  lfoGain.gain.value = 0.018;
+  lfo.connect(lfoGain);
+  lfoGain.connect(gain.gain);
+  lfo.start();
+}
+
+function playHoverTick(pitch = 880) {
+  ensureAudio();
+  const osc  = actx.createOscillator();
+  const gain = actx.createGain();
+  osc.type = 'square';
+  osc.frequency.value = pitch;
+  gain.gain.setValueAtTime(0.08, actx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.06);
+  osc.connect(gain);
+  gain.connect(actx.destination);
+  osc.start();
+  osc.stop(actx.currentTime + 0.06);
+}
+
+function playExtractSound() {
+  ensureAudio();
+  const t = actx.currentTime;
+  [440, 660, 880, 1100].forEach((f, i) => {
+    const osc  = actx.createOscillator();
+    const gain = actx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = f;
+    gain.gain.setValueAtTime(0, t + i * 0.06);
+    gain.gain.linearRampToValueAtTime(0.12, t + i * 0.06 + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.06 + 0.18);
+    osc.connect(gain);
+    gain.connect(actx.destination);
+    osc.start(t + i * 0.06);
+    osc.stop(t + i * 0.06 + 0.2);
+  });
+
+  // noise burst
+  const bufSize = actx.sampleRate * 0.15;
+  const buf = actx.createBuffer(1, bufSize, actx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) d[i] = (Math.random() * 2 - 1) * 0.06;
+
+  const src = actx.createBufferSource();
+  const flt = actx.createBiquadFilter();
+  flt.type = 'bandpass';
+  flt.frequency.value = 2200;
+  flt.Q.value = 2;
+  const gn = actx.createGain();
+  gn.gain.setValueAtTime(0.3, t);
+  gn.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+
+  src.buffer = buf;
+  src.connect(flt);
+  flt.connect(gn);
+  gn.connect(actx.destination);
+  src.start(t);
+}
+
+function playRotateWhoosh() {
+  ensureAudio();
+  const osc  = actx.createOscillator();
+  const gain = actx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(200, actx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(80, actx.currentTime + 0.3);
+  gain.gain.setValueAtTime(0.05, actx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.3);
+  osc.connect(gain);
+  gain.connect(actx.destination);
+  osc.start();
+  osc.stop(actx.currentTime + 0.3);
+}
+
+function playAllClearSound() {
+  ensureAudio();
+  const t = actx.currentTime;
+  [220, 330, 440, 550, 660, 880].forEach((f, i) => {
+    const osc  = actx.createOscillator();
+    const gain = actx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.value = f;
+    gain.gain.setValueAtTime(0, t + i * 0.08);
+    gain.gain.linearRampToValueAtTime(0.1, t + i * 0.08 + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.5);
+    osc.connect(gain);
+    gain.connect(actx.destination);
+    osc.start(t + i * 0.08);
+    osc.stop(t + i * 0.08 + 0.55);
+  });
+}
+
+let hoverTickCooldown = 0;
+function maybePlayHoverTick(isHit) {
+  if (isHit && Date.now() > hoverTickCooldown) {
+    playHoverTick(660 + Math.random() * 440);
+    hoverTickCooldown = Date.now() + 120;
+  }
+}
+
+/* ================================================================
+   10. INPUT — SHARED POINTER
+   ================================================================ */
+let isDrag = false;
+let lastMX = { x: 0, y: 0 };
+let rotVel = { x: 0, y: 0 };
+let mouseNorm = { x: 0, y: 0 };
+let handActive = false;
+let lastHandX = null, lastHandY = null;
+
+const ch       = document.getElementById('ch');
+const handDot  = document.getElementById('hand-dot');
+const inputModeEl = document.getElementById('input-mode');
+
+function setPointer(px, py) {
+  mouseNorm = { x: (px / W) * 2 - 1, y: -((py / H) * 2 - 1) };
+  ch.style.left      = px + 'px';
+  ch.style.top       = py + 'px';
+  handDot.style.left  = px + 'px';
+  handDot.style.top   = py + 'px';
+}
+
+/* ── MOUSE EVENTS (fallback when no hand detected) ─────────── */
+wrap.addEventListener('mousedown', e => {
+  if (handActive) return;
+  ensureAudio(); startAmbientHum(); playRotateWhoosh();
+  isDrag = true;
+  const r = wrap.getBoundingClientRect();
+  lastMX = { x: e.clientX - r.left, y: e.clientY - r.top };
+});
+wrap.addEventListener('mouseup',    () => isDrag = false);
+wrap.addEventListener('mouseleave', () => isDrag = false);
+wrap.addEventListener('mousemove', e => {
+  if (handActive) return;
+  const r  = wrap.getBoundingClientRect();
+  const mx = e.clientX - r.left, my = e.clientY - r.top;
+  setPointer(mx, my);
+  if (isDrag) {
+    const dx = mx - lastMX.x, dy = my - lastMX.y;
+    rotVel.y += dx * 0.004;
+    rotVel.x += dy * 0.004;
+    lastMX = { x: mx, y: my };
+  }
+});
+wrap.addEventListener('click', () => { ensureAudio(); startAmbientHum(); }, { once: true });
+
+/* ================================================================
+   11. MEDIAPIPE HANDS — CAMERA + TRACKING
+   ================================================================ */
+const videoEl = document.createElement('video');
+videoEl.style.display = 'none';
+document.body.appendChild(videoEl);
+
+const camPreview = document.getElementById('cam-preview');
+const pctx = camPreview.getContext('2d');
+camPreview.width = 96;
+camPreview.height = 72;
+
+let handInitialized = false;
+let lastPinchState = false;
+let pinchStartX = null, pinchStartY = null;
+
+function initHandTracking() {
+  if (typeof Hands === 'undefined') { console.warn('MediaPipe Hands not loaded'); return; }
+
+  const hands = new Hands({
+    locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`,
+  });
+  hands.setOptions({
+    maxNumHands: 1, modelComplexity: 0,
+    minDetectionConfidence: 0.7, minTrackingConfidence: 0.6,
+  });
+
+  hands.onResults(results => {
+    // draw mirrored preview
+    pctx.clearRect(0, 0, 96, 72);
+    if (results.image) {
+      pctx.save();
+      pctx.scale(-1, 1);
+      pctx.drawImage(results.image, -96, 0, 96, 72);
+      pctx.restore();
+    }
+
+    if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+      // hand detected — switch to hand input
+      if (!handActive) {
+        handActive = true;
+        handDot.style.display = 'block';
+        ch.style.display = 'none';
+        inputModeEl.textContent = 'INPUT: HAND TRACKING';
+        ensureAudio(); startAmbientHum();
+      }
+
+      const lm   = results.multiHandLandmarks[0];
+      const tip  = lm[8];                        // index finger tip
+      const px   = (1 - tip.x) * W, py = tip.y * H;  // mirror X
+
+      // pinch detection: thumb tip (4) vs index tip (8)
+      const thumb = lm[4];
+      const dx2 = (tip.x - thumb.x) * W, dy2 = (tip.y - thumb.y) * H;
+      const pinchDist = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+      const isPinching = pinchDist < W * 0.045;
+
+      if (isPinching) {
+        handDot.style.borderColor = '#ff44aacc';
+        if (!lastPinchState) {
+          pinchStartX = px; pinchStartY = py;
+          playRotateWhoosh();
+          lastPinchState = true;
+        } else if (pinchStartX !== null) {
+          const ddx = px - pinchStartX, ddy = py - pinchStartY;
+          rotVel.y += ddx * 0.002;
+          rotVel.x += ddy * 0.002;
+          pinchStartX = px; pinchStartY = py;
+        }
+      } else {
+        handDot.style.borderColor = '#aa44ff66';
+        lastPinchState = false;
+        pinchStartX = null;
+        pinchStartY = null;
+      }
+
+      setPointer(px, py);
+
+    } else {
+      // no hand — fall back to mouse
+      if (handActive) {
+        handActive = false;
+        handDot.style.display = 'none';
+        ch.style.display = 'block';
+        inputModeEl.textContent = 'INPUT: MOUSE';
+      }
+    }
+  });
+
+  if (typeof Camera !== 'undefined') {
+    const cam = new Camera(videoEl, {
+      onFrame: async () => { await hands.send({ image: videoEl }); },
+      width: 320, height: 240,
+    });
+    cam.start()
+      .then(() => { inputModeEl.textContent = 'INPUT: HAND TRACKING READY'; })
+      .catch(e => { console.warn('Camera error', e); });
+  }
+  handInitialized = true;
+}
+
+setTimeout(initHandTracking, 1200);
+
+/* ================================================================
+   12. SCAN WAVEFORM (left panel canvas)
+   ================================================================ */
+const scanCV = document.getElementById('scan-canvas');
+scanCV.width = 172; scanCV.height = 80;
+const sctx = scanCV.getContext('2d');
+const scanData = Array.from({ length: 60 }, () => Math.random());
+
+function drawScan(t) {
+  sctx.clearRect(0, 0, 172, 80);
+  sctx.fillStyle = 'rgba(20,0,35,0.6)';
+  sctx.fillRect(0, 0, 172, 80);
+
+  // grid lines
+  sctx.strokeStyle = 'rgba(100,0,180,0.15)';
+  sctx.lineWidth = 0.5;
+  for (let i = 0; i < 5; i++) {
+    sctx.beginPath(); sctx.moveTo(0, i * 20); sctx.lineTo(172, i * 20); sctx.stroke();
+  }
+
+  // waveform
+  scanData.push(0.28 + 0.72 * Math.abs(Math.sin(t * 1.2 + Math.random() * 0.5)));
+  if (scanData.length > 60) scanData.shift();
+
+  sctx.beginPath();
+  sctx.strokeStyle = 'rgba(180,80,255,0.75)';
+  sctx.lineWidth = 1;
+  scanData.forEach((v, i) => {
+    const x = i * (172 / 60), y = 72 - v * 62;
+    i === 0 ? sctx.moveTo(x, y) : sctx.lineTo(x, y);
+  });
+  sctx.stroke();
+
+  // fill under waveform
+  sctx.lineTo(172, 80); sctx.lineTo(0, 80); sctx.closePath();
+  sctx.fillStyle = 'rgba(120,0,200,0.12)';
+  sctx.fill();
+
+  // sweep line
+  const scanHead = (t * 60) % 172;
+  sctx.strokeStyle = 'rgba(255,100,200,0.55)';
+  sctx.lineWidth = 1;
+  sctx.beginPath(); sctx.moveTo(scanHead, 0); sctx.lineTo(scanHead, 80); sctx.stroke();
+}
+
+/* ================================================================
+   13. HUD METRICS — periodic update
+   ================================================================ */
+const raycaster = new THREE.Raycaster();
+raycaster.params.Sprite = { threshold: 0.10 };
+
+let collected = 0;
+const dwellStart = Date.now();
+let frameN = 0;
+
+setInterval(() => {
+  const s  = Math.floor((Date.now() - dwellStart) / 1000);
+  const m  = Math.floor(s / 60), ss = s % 60;
+
+  document.getElementById('dt').textContent =
+    String(m).padStart(2, '0') + ':' + String(ss).padStart(2, '0');
+
+  const conf = Math.min(99, Math.floor(15 + s * 0.6));
+  document.getElementById('sig-conf').textContent = conf;
+  document.getElementById('sig-bar').style.width = conf + '%';
+
+  document.getElementById('beh-idx').textContent = (0.001 + s * 0.0045).toFixed(3);
+  document.getElementById('beh-bar').style.width = Math.min(99, s * 0.45) + '%';
+
+  const rd = ((group.rotation.y % (Math.PI * 2)) / (Math.PI * 2) * 360 + 360) % 360;
+  document.getElementById('rx').textContent = String(Math.floor(rd)).padStart(3, '0');
+
+  document.querySelectorAll('#vec-list li').forEach(el => {
+    el.classList.toggle('active', Math.random() > 0.35);
+  });
+  document.getElementById('lay-n').textContent = String(Math.floor(1 + Math.random() * 6)).padStart(2, '0');
+}, 800);
+
+/* ================================================================
+   14. ANIMATION LOOP
+   ================================================================ */
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  frameN++;
+  document.getElementById('fr').textContent = String(frameN).padStart(4, '0');
+
+  // damped rotation
+  rotVel.x *= 0.88;
+  rotVel.y *= 0.88;
+  group.rotation.x += 0.00018 + rotVel.x;
+  group.rotation.y += 0.00055 + rotVel.y;
+
+  // particle drift
+  particles.forEach((p, i) => {
+    const wave = Math.sin(t * 0.25 + p.driftOff) * 0.04;
+    p.sp.position.set(
+      p.localPos.x + Math.sin(t * 0.3 + i * 0.07) * 0.018,
+      p.localPos.y + wave,
+      p.localPos.z + Math.cos(t * 0.28 + i * 0.06) * 0.015,
+    );
+  });
+
+  // target drift
+  targetSprites.forEach(ts => {
+    if (ts.collected) return;
+    const wave = Math.sin(t * 0.18 + ts.driftOff) * 0.025;
+    ts.sp.position.set(ts.localPos.x, ts.localPos.y + wave, ts.localPos.z);
+  });
+
+  updateLighting();
+
+  // raycasting — hover detection
+  const m2 = new THREE.Vector2(mouseNorm.x, mouseNorm.y);
+  raycaster.setFromCamera(m2, camera);
+  const meshes = targetSprites.filter(ts => !ts.collected).map(ts => ts.sp);
+  const hits = raycaster.intersectObjects(meshes);
+
+  targetSprites.forEach(ts => {
+    if (ts.collected) return;
+    const isHit = hits.length > 0 && hits[0].object === ts.sp;
+
+    if (isHit) {
+      maybePlayHoverTick(true);
+      ts.hover = Math.min(1, ts.hover + 0.035);
+
+      if (ts.hover >= 1) {
+        ts.collected = true;
+        collected++;
+        ts.li.classList.add('done');
+        ts.mat.opacity = 0.12;
+
+        document.getElementById('tc').textContent = collected;
+        document.getElementById('ext-meter').style.width = (collected / 6 * 100) + '%';
+        document.getElementById('prof-st').textContent = collected >= 6 ? 'COMPLETE' : 'BUILDING';
+
+        if (collected === 6) {
+          document.getElementById('sbar').textContent = 'EXTRACTION COMPLETE — ALL BEHAVIORAL SIGNATURES ACQUIRED';
+          playAllClearSound();
+        } else {
+          playExtractSound();
+        }
+      }
+    } else {
+      ts.hover = Math.max(0, ts.hover - 0.025);
+    }
+  });
+
+  drawScan(t);
+  renderer.render(scene, camera);
+}
+
+animate();
+
+/* ================================================================
+   15. RESIZE HANDLER
+   ================================================================ */
+window.addEventListener('resize', () => {
+  W = wrap.offsetWidth;
+  H = wrap.offsetHeight;
+  renderer.setSize(W, H);
+  camera.aspect = W / H;
+  camera.updateProjectionMatrix();
+});
+
+})();
+</script>
+</body>
+</html>

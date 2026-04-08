@@ -7,13 +7,13 @@
 <style>
 /* ── RESET & BASE ──────────────────────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; height: 100%; background: #02000a; overflow: hidden; }
+html, body { width: 100%; height: 100%; background: #00080f; overflow: hidden; }
 
 /* ── MAIN CONTAINER ────────────────────────────────────────────── */
 #s3 {
   position: relative;
   width: 100vw; height: 100vh;
-  background: #02000a;
+  background: #00080f;
   overflow: hidden;
   cursor: none;
   font-family: 'Courier New', monospace;
@@ -22,84 +22,77 @@ html, body { width: 100%; height: 100%; background: #02000a; overflow: hidden; }
 
 /* ── LEFT SCAN PANEL ───────────────────────────────────────────── */
 #scan-panel {
-  position: absolute; left: 22px; top: 50%; transform: translateY(-50%);
+  position: absolute; left: 36px; top: 50%; transform: translateY(-50%);
   width: 172px; pointer-events: none;
   display: flex; flex-direction: column; gap: 10px;
 }
 .sp-block {
-  border: 0.5px solid #7700cc55;
-  background: rgba(40, 0, 60, 0.55);
+  border: 0.5px solid #0077cc55;
+  background: rgba(0, 40, 60, 0.55);
   padding: 9px 11px;
 }
-.sp-label  { font-size: 9px; letter-spacing: .2em; color: #aa44ff99; margin-bottom: 5px; text-transform: uppercase; }
-.sp-value  { font-size: 12px; letter-spacing: .12em; color: #cc88ff; font-weight: bold; }
-.sp-bar-wrap { width: 100%; height: 3px; background: #33004422; margin-top: 5px; }
-.sp-bar    { height: 100%; background: linear-gradient(90deg, #6600cc, #ff44aa); transition: width .6s; }
-.sp-micro  { font-size: 9px; color: #7700cc88; letter-spacing: .13em; margin-top: 4px; }
+.sp-label  { font-size: 9px; letter-spacing: .2em; color: #44aaff99; margin-bottom: 5px; text-transform: uppercase; }
+.sp-value  { font-size: 12px; letter-spacing: .12em; color: #88ccff; font-weight: bold; }
+.sp-bar-wrap { width: 100%; height: 3px; background: #00334422; margin-top: 5px; }
+.sp-bar    { height: 100%; background: linear-gradient(90deg, #0066cc, #00ffcc); transition: width .6s; }
+.sp-micro  { font-size: 9px; color: #0077cc88; letter-spacing: .13em; margin-top: 4px; }
 #scan-canvas { width: 100%; height: 80px; display: block; margin-top: 2px; }
 .sp-list   { list-style: none; }
 .sp-list li {
-  font-size: 9px; letter-spacing: .13em; color: #8833cc66;
-  border-left: 1.5px solid #6600cc44;
+  font-size: 9px; letter-spacing: .13em; color: #3388cc66;
+  border-left: 1.5px solid #0066cc44;
   padding-left: 6px; margin-bottom: 5px; line-height: 1.5;
 }
-.sp-list li.active { color: #cc88ffcc; border-left-color: #aa44ff; }
+.sp-list li.active { color: #88ccffcc; border-left-color: #44aaff; }
 
 /* ── RIGHT PANEL ───────────────────────────────────────────────── */
 #right-panel {
-  position: absolute; right: 22px; top: 50%; transform: translateY(-50%);
+  position: absolute; right: 36px; top: 50%; transform: translateY(-50%);
   width: 164px; pointer-events: none;
   display: flex; flex-direction: column; gap: 10px;
 }
-.rp-block     { border: 0.5px solid #ff448833; background: rgba(50, 0, 30, 0.55); padding: 9px 11px; }
-.rp-label     { font-size: 9px; letter-spacing: .2em; color: #ff448877; margin-bottom: 5px; }
-.rp-value     { font-size: 14px; letter-spacing: .08em; color: #ff88cc; font-weight: bold; }
-.rp-sub       { font-size: 9px; color: #cc446688; letter-spacing: .12em; margin-top: 2px; }
-.rp-meter     { width: 100%; height: 2px; background: #33001122; margin-top: 6px; }
-.rp-meter-fill { height: 100%; background: #ff4488; transition: width .6s; }
+.rp-block     { border: 0.5px solid #00ccaa33; background: rgba(0, 50, 40, 0.55); padding: 9px 11px; }
+.rp-label     { font-size: 9px; letter-spacing: .2em; color: #00ccaa77; margin-bottom: 5px; }
+.rp-value     { font-size: 14px; letter-spacing: .08em; color: #44ffdd; font-weight: bold; }
+.rp-sub       { font-size: 9px; color: #00997788; letter-spacing: .12em; margin-top: 2px; }
+.rp-meter     { width: 100%; height: 2px; background: #00331122; margin-top: 6px; }
+.rp-meter-fill { height: 100%; background: #00ccaa; transition: width .6s; }
 
 .collected-list    { list-style: none; margin-top: 2px; }
 .collected-list li {
-  font-size: 9px; letter-spacing: .15em; color: #ff448844;
-  padding: 3px 0; border-bottom: 0.5px solid #ff448811; transition: color .4s;
+  font-size: 9px; letter-spacing: .15em; color: #00ccaa44;
+  padding: 3px 0; border-bottom: 0.5px solid #00ccaa11; transition: color .4s;
 }
-.collected-list li.done { color: #ff88cccc; }
+.collected-list li.done { color: #44ffddcc; }
 
 /* ── SESSION METRICS (right panel) ─────────────────────────────── */
 .session-metrics {
-  font-size: 9px; color: #ff448866; letter-spacing: .11em; line-height: 2.0;
+  font-size: 9px; color: #00ccaa66; letter-spacing: .11em; line-height: 2.0;
 }
-.session-metrics span { color: #ff88cc; }
-.archive-value { font-size: 10px; color: #cc66ff; }
+.session-metrics span { color: #44ffdd; }
+.archive-value { font-size: 10px; color: #44ffdd; }
 
 /* ── HUD CORNERS ───────────────────────────────────────────────── */
 .hud { position: absolute; pointer-events: none; font-size: 9px; letter-spacing: .13em; line-height: 1.85; }
-#htl { top: 16px;    left: 22px;  color: #8833cc77; }
-#htr { top: 16px;    right: 22px; text-align: right; color: #ff448866; }
-#hbl { bottom: 18px; left: 22px;  color: #8833cc66; }
-#hbr { bottom: 18px; right: 22px; text-align: right; color: #ff448855; }
+#htl { top: 28px;    left: 36px;  color: #3388cc77; }
+#htr { top: 28px;    right: 36px; text-align: right; color: #00ccaa66; }
+#hbl { bottom: 32px; left: 36px;  color: #3388cc66; }
+#hbr { bottom: 32px; right: 36px; text-align: right; color: #00ccaa55; }
 
-.hud-highlight-purple { color: #cc88ff; }
-.hud-highlight-pink   { color: #ff88cc; }
+.hud-highlight-purple { color: #88ccff; }
+.hud-highlight-pink   { color: #44ffdd; }
 .hud-highlight-red    { color: #ff4466; }
-.hud-highlight-violet { color: #aa66ff; }
-
-/* ── STATUS BAR ────────────────────────────────────────────────── */
-#sbar {
-  position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-  font-size: 9px; letter-spacing: .2em; color: #aa44ff55;
-  pointer-events: none; white-space: nowrap;
-}
+.hud-highlight-violet { color: #66aaff; }
 
 /* ── CROSSHAIR (mouse cursor) ──────────────────────────────────── */
 #ch {
   position: absolute; pointer-events: none;
   width: 28px; height: 28px; transform: translate(-50%, -50%);
 }
-#ch::before, #ch::after { content: ''; position: absolute; background: #aa44ff66; }
+#ch::before, #ch::after { content: ''; position: absolute; background: #ff2233cc; }
 #ch::before { top: 50%; left: 0; right: 0; height: .5px; transform: translateY(-50%); }
 #ch::after  { left: 50%; top: 0; bottom: 0; width: .5px; transform: translateX(-50%); }
-.chc { position: absolute; width: 6px; height: 6px; border-color: #aa44ffaa; border-style: solid; }
+.chc { position: absolute; width: 6px; height: 6px; border-color: #ff2233ee; border-style: solid; }
 .ctl { top: 0;    left: 0;  border-width: 1px 0 0 1px; }
 .ctr { top: 0;    right: 0; border-width: 1px 1px 0 0; }
 .cbl { bottom: 0; left: 0;  border-width: 0 0 1px 1px; }
@@ -107,14 +100,14 @@ html, body { width: 100%; height: 100%; background: #02000a; overflow: hidden; }
 
 /* ── CAMERA / HAND TRACKING ────────────────────────────────────── */
 #cam-wrap {
-  position: absolute; bottom: 18px; right: 22px;
+  position: absolute; bottom: 52px; right: 36px;
   pointer-events: none; z-index: 10;
 }
 #cam-video   { display: none; }
-#cam-preview { width: 96px; height: 72px; border: 0.5px solid #aa44ff44; opacity: 0.55; transform: scaleX(-1); }
+#cam-preview { width: 96px; height: 72px; border: 0.5px solid #44aaff44; opacity: 0.55; transform: scaleX(-1); }
 #input-mode {
-  position: absolute; bottom: 4px; right: 22px;
-  font-size: 8px; letter-spacing: .18em; color: #aa44ff66;
+  position: absolute; bottom: 32px; right: 36px;
+  font-size: 8px; letter-spacing: .18em; color: #44aaff66;
   pointer-events: none; white-space: nowrap; margin-top: 4px;
 }
 
@@ -123,26 +116,14 @@ html, body { width: 100%; height: 100%; background: #02000a; overflow: hidden; }
   position: absolute; width: 18px; height: 18px;
   pointer-events: none; transform: translate(-50%, -50%); display: none;
 }
-#hand-dot::before, #hand-dot::after { content: ''; position: absolute; background: #ff44aacc; }
+#hand-dot::before, #hand-dot::after { content: ''; position: absolute; background: #00ffcccc; }
 #hand-dot::before { top: 50%; left: 0; right: 0; height: .5px; transform: translateY(-50%); }
 #hand-dot::after  { left: 50%; top: 0; bottom: 0; width: .5px; transform: translateX(-50%); }
 .hd-ring {
   position: absolute; width: 18px; height: 18px;
-  border: 1px solid #ff44aa88; border-radius: 50%; top: 0; left: 0;
+  border: 1px solid #00ffcc88; border-radius: 50%; top: 0; left: 0;
 }
 
-/* ── GESTURE GUIDE ─────────────────────────────────────────────── */
-#gesture-guide {
-  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
-  pointer-events: none; display: flex; gap: 32px; align-items: flex-end;
-}
-.gesture-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.gesture-divider { width: 0.5px; height: 40px; background: #aa44ff22; margin-bottom: 24px; }
-.gesture-label {
-  font-size: 8px; letter-spacing: .15em; color: #aa44ff88;
-  text-align: center; line-height: 1.6;
-}
-.gesture-label span { color: #ff44aaaa; }
 </style>
 </head>
 <body>
@@ -229,43 +210,6 @@ html, body { width: 100%; height: 100%; background: #02000a; overflow: hidden; }
     LAYER: <span id="lay-n" class="hud-highlight-pink">03</span>
   </div>
 
-  <!-- ── STATUS BAR ──────────────────────────────────────────── -->
-  <div id="sbar">DRAG TO ROTATE GLOBE — HOVER TARGET NODE TO EXTRACT SIGNATURE</div>
-
-  <!-- ── GESTURE GUIDE ───────────────────────────────────────── -->
-  <div id="gesture-guide">
-    <div class="gesture-item">
-      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="24" cy="38" rx="10" ry="6" fill="none" stroke="#aa44ff44" stroke-width="0.8"/>
-        <path d="M14 34 Q11 30 12 26 Q13 23 15 24" fill="none" stroke="#aa44ff55" stroke-width="1.2" stroke-linecap="round"/>
-        <path d="M20 32 Q19 24 20 16 Q21 10 24 9" fill="none" stroke="#aa44ffcc" stroke-width="1.6" stroke-linecap="round"/>
-        <circle cx="24" cy="9" r="2.5" fill="#aa44ffaa"/>
-        <path d="M24 32 Q24 26 25 22 Q26 19 27 20" fill="none" stroke="#aa44ff44" stroke-width="1.2" stroke-linecap="round"/>
-        <path d="M28 33 Q29 28 29 25" fill="none" stroke="#aa44ff33" stroke-width="1.2" stroke-linecap="round"/>
-        <path d="M31 34 Q32 30 32 28" fill="none" stroke="#aa44ff22" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="24" y1="5" x2="24" y2="2" stroke="#ff44aa88" stroke-width="0.8" stroke-dasharray="1,1"/>
-        <circle cx="24" cy="1" r="1" fill="#ff44aa88"/>
-      </svg>
-      <div class="gesture-label">INDEX FINGER<br><span>HOVER = SELECT</span></div>
-    </div>
-    <div class="gesture-divider"></div>
-    <div class="gesture-item">
-      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="24" cy="38" rx="10" ry="6" fill="none" stroke="#aa44ff44" stroke-width="0.8"/>
-        <path d="M14 34 Q12 29 14 24 Q16 20 19 18" fill="none" stroke="#aa44ffcc" stroke-width="1.6" stroke-linecap="round"/>
-        <circle cx="19" cy="18" r="2.5" fill="#aa44ffaa"/>
-        <path d="M20 32 Q19 25 20 18 Q21 13 22 12" fill="none" stroke="#aa44ffcc" stroke-width="1.6" stroke-linecap="round"/>
-        <circle cx="22" cy="12" r="2.5" fill="#aa44ffaa"/>
-        <line x1="19" y1="18" x2="22" y2="12" stroke="#ff44aacc" stroke-width="1" stroke-dasharray="2,1"/>
-        <path d="M24 32 Q25 26 25 22" fill="none" stroke="#aa44ff44" stroke-width="1.2" stroke-linecap="round"/>
-        <path d="M28 33 Q29 28 29 26" fill="none" stroke="#aa44ff33" stroke-width="1.2" stroke-linecap="round"/>
-        <path d="M31 34 Q32 30 32 28" fill="none" stroke="#aa44ff22" stroke-width="1.2" stroke-linecap="round"/>
-        <path d="M6 24 Q8 18 14 15" fill="none" stroke="#ff44aa66" stroke-width="0.8" stroke-dasharray="2,2"/>
-        <polygon points="14,12 14,17 18,14" fill="#ff44aa66"/>
-      </svg>
-      <div class="gesture-label">PINCH GESTURE<br><span>DRAG = ROTATE</span></div>
-    </div>
-  </div>
 
   <!-- ── HAND TRACKING OVERLAY ───────────────────────────────── -->
   <div id="cam-wrap"><canvas id="cam-preview"></canvas></div>
@@ -284,6 +228,7 @@ html, body { width: 100%; height: 100%; background: #02000a; overflow: hidden; }
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 
 <script>
 (function () {
@@ -300,13 +245,13 @@ const mainCanvas = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({ canvas: mainCanvas, alpha: false, antialias: true });
 renderer.setSize(W, H);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setClearColor(0x02000a, 1);
+renderer.setClearColor(0x00080f, 1);
 
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x02000a, 0.022);
+scene.fog = new THREE.FogExp2(0x00080f, 0.022);
 
 const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 200);
-camera.position.set(0, 0, 7.5);
+camera.position.set(0, 0, 10.5);
 
 /* ================================================================
    2. CONSTANTS
@@ -318,16 +263,16 @@ const GLYPHS = '01アイウエオカキクケコサシスセタナニヌ∅∑�
 
 const TARGETS = [
   { label: 'ATTENTION', color: '#ffffff', glow: 'rgba(255,255,255,0.75)' },
-  { label: 'REACTION',  color: '#cc88ff', glow: 'rgba(170,80,255,0.7)' },
-  { label: 'DWELL',     color: '#ff44aa', glow: 'rgba(255,60,160,0.65)' },
-  { label: 'PATTERN',   color: '#ff9955', glow: 'rgba(255,130,60,0.6)' },
-  { label: '87',        color: '#88ddff', glow: 'rgba(80,200,255,0.65)' },
-  { label: '42',        color: '#aa77ff', glow: 'rgba(150,90,255,0.65)' },
+  { label: 'REACTION',  color: '#88ccff', glow: 'rgba(80,180,255,0.7)' },
+  { label: 'DWELL',     color: '#00ffcc', glow: 'rgba(0,255,200,0.65)' },
+  { label: 'PATTERN',   color: '#55aaff', glow: 'rgba(60,150,255,0.6)' },
+  { label: '87',        color: '#aaeeff', glow: 'rgba(150,230,255,0.65)' },
+  { label: '42',        color: '#44ddff', glow: 'rgba(60,200,255,0.65)' },
 ];
 const TARGET_COLORS = [
-  { r: 255, g: 255, b: 255 }, { r: 200, g: 130, b: 255 },
-  { r: 255, g: 68,  b: 170 }, { r: 255, g: 148, b: 68 },
-  { r: 120, g: 220, b: 255 }, { r: 160, g: 110, b: 255 },
+  { r: 255, g: 255, b: 255 }, { r: 136, g: 204, b: 255 },
+  { r: 0,   g: 255, b: 204 }, { r: 85,  g: 170, b: 255 },
+  { r: 170, g: 238, b: 255 }, { r: 68,  g: 221, b: 255 },
 ];
 
 /* ================================================================
@@ -416,16 +361,55 @@ const allPts   = [...surfPts, ...innerPts];
 
 const group = new THREE.Group();
 scene.add(group);
+group.rotation.z = -0.42;
 
 function pickCol() {
   const r = Math.random();
-  if (r < 0.55) return { r: 0, g: 255, b: 65 };
-  if (r < 0.80) return { r: 0, g: 200, b: 50 };
-  return { r: 0, g: 140, b: 35 };
+  if (r < 0.55) return { r: 0, g: 200, b: 255 };
+  if (r < 0.80) return { r: 0, g: 160, b: 220 };
+  return { r: 0, g: 100, b: 180 };
+}
+
+// ── Camera-data global store (Hands + FaceMesh) ──
+const CAM_FIELDS = [
+  'HAND_VECTOR_ACTIVE', 'HAND_SIDE',
+  'POINTER_X', 'POINTER_Y', 'POINTER_Z',
+  'PINCH_DIST', 'PINCH_ACTIVE',
+  'WRIST_X', 'WRIST_Y', 'FINGER_SPREAD',
+  'FACE_LOCK', 'FACE_X', 'FACE_Y', 'FACE_SIZE', 'PROXIMITY_INDEX',
+  'HEAD_YAW', 'HEAD_PITCH', 'EYE_OPENNESS', 'MOUTH_OPEN', 'FACE_STABILITY',
+];
+const CAM_DATA = {
+  HAND_VECTOR_ACTIVE: 0, HAND_SIDE: 0,
+  POINTER_X: 0, POINTER_Y: 0, POINTER_Z: 0,
+  PINCH_DIST: 0, PINCH_ACTIVE: 0,
+  WRIST_X: 0, WRIST_Y: 0, FINGER_SPREAD: 0,
+  FACE_LOCK: 0, FACE_X: 0, FACE_Y: 0, FACE_SIZE: 0, PROXIMITY_INDEX: 0,
+  HEAD_YAW: 0, HEAD_PITCH: 0, EYE_OPENNESS: 0, MOUTH_OPEN: 0, FACE_STABILITY: 0,
+};
+
+// Non-cached value-string texture (square canvas, text auto-fit)
+function makeValueTex(text, sz) {
+  const cs = Math.ceil(sz * 3);
+  const cv = document.createElement('canvas');
+  cv.width = cs; cv.height = cs;
+  const cx = cv.getContext('2d');
+  let fontPx = Math.ceil(cs * 0.55);
+  cx.font = `${fontPx}px Courier New`;
+  // shrink font until text fits
+  while (cx.measureText(text).width > cs * 0.92 && fontPx > 6) {
+    fontPx -= 1;
+    cx.font = `${fontPx}px Courier New`;
+  }
+  cx.fillStyle = '#ffffff';
+  cx.textAlign = 'center';
+  cx.textBaseline = 'middle';
+  cx.fillText(text, cs / 2, cs / 2);
+  return new THREE.CanvasTexture(cv);
 }
 
 const particles = [];
-allPts.forEach(pt => {
+allPts.forEach((pt, idx) => {
   const char = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
   const sz   = 26 + Math.random() * 10;
   const tex  = makeCharTex(char, sz);
@@ -439,8 +423,20 @@ allPts.forEach(pt => {
   sp.scale.set(bs, bs, bs);
   sp.position.copy(pt);
   group.add(sp);
-  particles.push({ sp, mat, localPos: pt.clone(), driftOff: Math.random() * 6.28, baseColor: col, baseScale: bs });
+  const field = CAM_FIELDS[idx % CAM_FIELDS.length];
+  particles.push({ sp, mat, localPos: pt.clone(), driftOff: Math.random() * 6.28, baseColor: col, baseScale: bs, field, sz });
 });
+
+// Refresh particle textures from CAM_DATA every 200ms
+setInterval(() => {
+  particles.forEach(p => {
+    const v = CAM_DATA[p.field];
+    const text = (typeof v === 'number' && !Number.isInteger(v)) ? v.toFixed(2) : String(v);
+    if (p.mat.map) p.mat.map.dispose();
+    p.mat.map = makeValueTex(text, p.sz);
+    p.mat.needsUpdate = true;
+  });
+}, 200);
 
 /* ================================================================
    6. BUILD TARGET SPRITES
@@ -482,17 +478,237 @@ function makeRing(tiltX, tiltZ, opacity, seg) {
     pts.push(new THREE.Vector3(Math.cos(a) * RADIUS * 1.01, 0, Math.sin(a) * RADIUS * 1.01));
   }
   const geo  = new THREE.BufferGeometry().setFromPoints(pts);
-  const mat  = new THREE.LineBasicMaterial({ color: 0x8833ff, transparent: true, opacity, depthWrite: false });
+  const mat  = new THREE.LineBasicMaterial({ color: 0x0088ff, transparent: true, opacity, depthWrite: false });
   const ring = new THREE.Line(geo, mat);
   ring.rotation.x = tiltX;
   ring.rotation.z = tiltZ;
   return ring;
 }
 
-group.add(makeRing(0, 0, 0.10, 96));
 group.add(makeRing(Math.PI * 0.28, 0, 0.07, 80));
 group.add(makeRing(Math.PI * 0.5, Math.PI * 0.18, 0.07, 80));
 group.add(makeRing(Math.PI * 0.5, 0, 0.06, 80));
+
+/* ================================================================
+   7b. GLOBE DECO — street-art globe overlay
+   ================================================================ */
+const equatorSegments = [];
+(function () {
+  // ---- equator ring split into 48 independently-shaded segments ----
+  const N_SEG = 48;
+  const ER = RADIUS * 1.015;
+  for (let i = 0; i < N_SEG; i++) {
+    const a0 = (i / N_SEG) * Math.PI * 2;
+    const a1 = ((i + 1) / N_SEG) * Math.PI * 2;
+    const p0 = new THREE.Vector3(Math.cos(a0) * ER, 0, Math.sin(a0) * ER);
+    const p1 = new THREE.Vector3(Math.cos(a1) * ER, 0, Math.sin(a1) * ER);
+    const mid = p0.clone().add(p1).multiplyScalar(0.5);
+    const geo = new THREE.BufferGeometry().setFromPoints([p0, p1]);
+    const mat = new THREE.LineBasicMaterial({
+      color: 0x00e5ff, transparent: true, opacity: 0.5,
+      depthWrite: false, depthTest: true,
+    });
+    const seg = new THREE.Line(geo, mat);
+    seg.userData.localMid = mid;
+    group.add(seg);
+    equatorSegments.push(seg);
+  }
+})();
+
+let poleNorth, poleSouth;
+(function () {
+  // ---- pole weld markers ----
+  function makePoleTex() {
+    const cs = 128;
+    const cv = document.createElement('canvas');
+    cv.width = cs; cv.height = cs;
+    const cx = cv.getContext('2d');
+    cx.clearRect(0, 0, cs, cs);
+    cx.strokeStyle = '#ffffff';
+    cx.lineCap = 'round';
+    cx.lineWidth = 6;
+    cx.shadowColor = '#ffffff';
+    cx.shadowBlur = 12;
+    cx.beginPath();
+    cx.moveTo(cs / 2, cs * 0.18); cx.lineTo(cs / 2, cs * 0.82);
+    cx.moveTo(cs * 0.18, cs / 2); cx.lineTo(cs * 0.82, cs / 2);
+    cx.stroke();
+    return new THREE.CanvasTexture(cv);
+  }
+  const poleTex = makePoleTex();
+  [+1, -1].forEach(sign => {
+    const mat = new THREE.SpriteMaterial({
+      map: poleTex, transparent: true, opacity: 0.95,
+      depthWrite: false, depthTest: true,
+    });
+    const sp = new THREE.Sprite(mat);
+    sp.position.set(0, sign * RADIUS * 1.01, 0);
+    sp.scale.set(0.18, 0.18, 1);
+    sp.raycast = function () {};
+    group.add(sp);
+    if (sign > 0) poleNorth = sp; else poleSouth = sp;
+  });
+})();
+
+/* ================================================================
+   7c. GLOBE STAND — instrument armature
+   ================================================================ */
+(function () {
+  const STAND_COLOR = 0x8899aa;
+  const HILITE      = 0x00f5ff;
+  const TILT        = -0.42;
+
+  const mkLine = (pts, color, opacity) => {
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    const mat = new THREE.LineBasicMaterial({
+      color, transparent: true, opacity,
+      depthWrite: false, depthTest: true,
+    });
+    return new THREE.Line(geo, mat);
+  };
+
+  // ---- arc container (tilted with globe axis) ----
+  const arcGroup = new THREE.Group();
+  arcGroup.rotation.z = TILT;
+  scene.add(arcGroup);
+
+  const R_OUT = RADIUS * 1.22;
+  const R_IN  = RADIUS * 1.17;
+  const A0    = -Math.PI * 0.1;
+  const A1    =  Math.PI * 1.1;
+
+  const arcPoint = (r, a) => new THREE.Vector3(Math.sin(a) * r, Math.cos(a) * r, 0);
+
+  // outer solid arc
+  (function () {
+    const seg = 96;
+    const pts = [];
+    for (let i = 0; i <= seg; i++) {
+      const a = A0 + (A1 - A0) * (i / seg);
+      pts.push(arcPoint(R_OUT, a));
+    }
+    arcGroup.add(mkLine(pts, STAND_COLOR, 0.45));
+  })();
+
+  // inner dashed arc (short segments with gaps)
+  (function () {
+    const totalSegs = 40;
+    for (let i = 0; i < totalSegs; i++) {
+      if (i % 2 === 1) continue; // skip every other → dashed
+      const a0 = A0 + (A1 - A0) * (i / totalSegs);
+      const a1 = A0 + (A1 - A0) * ((i + 1) / totalSegs);
+      arcGroup.add(mkLine([arcPoint(R_IN, a0), arcPoint(R_IN, a1)], STAND_COLOR, 0.25));
+    }
+  })();
+
+  // diamond tick sprites along outer arc
+  const diamondTex = (function () {
+    const cs = 32;
+    const cv = document.createElement('canvas');
+    cv.width = cs; cv.height = cs;
+    const cx = cv.getContext('2d');
+    cx.strokeStyle = '#aabbcc';
+    cx.lineWidth = 1.5;
+    cx.beginPath();
+    cx.moveTo(cs / 2, 4);
+    cx.lineTo(cs - 4, cs / 2);
+    cx.lineTo(cs / 2, cs - 4);
+    cx.lineTo(4, cs / 2);
+    cx.closePath();
+    cx.stroke();
+    return new THREE.CanvasTexture(cv);
+  })();
+
+  for (let i = 0; i < 8; i++) {
+    const a = A0 + (A1 - A0) * (i / 7);
+    const p = arcPoint(R_OUT, a);
+    const m = new THREE.SpriteMaterial({
+      map: diamondTex, transparent: true, opacity: 0.85,
+      depthWrite: false, depthTest: true,
+    });
+    const sp = new THREE.Sprite(m);
+    sp.position.copy(p);
+    sp.scale.set(0.07, 0.07, 1);
+    sp.raycast = function () {};
+    arcGroup.add(sp);
+  }
+
+  // cyan highlight arc segment (top portion)
+  const HA0 = Math.PI * 0.1;
+  const HA1 = Math.PI * 0.43;
+  (function () {
+    const seg = 32;
+    const pts = [];
+    for (let i = 0; i <= seg; i++) {
+      const a = HA0 + (HA1 - HA0) * (i / seg);
+      pts.push(arcPoint(R_OUT, a));
+    }
+    arcGroup.add(mkLine(pts, HILITE, 0.85));
+  })();
+
+  // angle labels at ends of highlight arc
+  function makeLabelTex(text, color) {
+    const cv = document.createElement('canvas');
+    cv.width = 96; cv.height = 32;
+    const cx = cv.getContext('2d');
+    cx.font = '9px Courier New';
+    cx.fillStyle = color;
+    cx.textAlign = 'center';
+    cx.textBaseline = 'middle';
+    cx.fillText(text, cv.width / 2, cv.height / 2);
+    return new THREE.CanvasTexture(cv);
+  }
+
+  [
+    { text: '087°', a: HA0 },
+    { text: '274°', a: HA1 },
+  ].forEach(o => {
+    const p = arcPoint(R_OUT * 1.06, o.a);
+    const m = new THREE.SpriteMaterial({
+      map: makeLabelTex(o.text, '#00f5ff'),
+      transparent: true, opacity: 0.7,
+      depthWrite: false, depthTest: true,
+    });
+    const sp = new THREE.Sprite(m);
+    sp.position.copy(p);
+    sp.scale.set(0.18 * 3, 0.18, 1);
+    sp.raycast = function () {};
+    arcGroup.add(sp);
+  });
+
+  // ---- triangular base ----
+  const top = new THREE.Vector3(0, -RADIUS * 1.13, 0);
+  const bl  = new THREE.Vector3(-0.52, -RADIUS * 1.42, 0);
+  const br  = new THREE.Vector3( 0.52, -RADIUS * 1.42, 0);
+
+  scene.add(mkLine([top, bl], STAND_COLOR, 0.45));
+  scene.add(mkLine([top, br], STAND_COLOR, 0.45));
+  scene.add(mkLine([bl, br], STAND_COLOR, 0.45));
+
+  // ---- censored property tag ----
+  (function () {
+    const cv = document.createElement('canvas');
+    cv.width = 320; cv.height = 48;
+    const cx = cv.getContext('2d');
+    cx.font = '8px Courier New';
+    cx.fillStyle = '#7aaabb';
+    cx.textAlign = 'center';
+    cx.textBaseline = 'middle';
+    cx.fillText('UNIT-07 // PROPERTY OF [REDACTED]', cv.width / 2, cv.height * 0.32);
+    cx.fillText('████████ ██ ████',                  cv.width / 2, cv.height * 0.70);
+
+    const tex = new THREE.CanvasTexture(cv);
+    const m = new THREE.SpriteMaterial({
+      map: tex, transparent: true, opacity: 0.55,
+      depthWrite: false, depthTest: true,
+    });
+    const sp = new THREE.Sprite(m);
+    sp.position.set(0, -RADIUS * 1.30, 0.01);
+    sp.scale.set(0.5 * (320 / 48) * 0.18, 0.5 * 0.18, 1);
+    sp.raycast = function () {};
+    scene.add(sp);
+  })();
+})();
 
 /* ================================================================
    8. LIGHTING — per-frame face/backface shading
@@ -501,7 +717,7 @@ const _wpos   = new THREE.Vector3();
 const _camDir = new THREE.Vector3();
 
 function updateLighting() {
-  _camDir.set(0, 0, -1).applyQuaternion(camera.quaternion);
+  _camDir.set(0, 0, 1).applyQuaternion(camera.quaternion);
 
   particles.forEach(p => {
     p.sp.getWorldPosition(_wpos);
@@ -514,7 +730,7 @@ function updateLighting() {
     const litF    = Math.max(0, litDot * 0.5 + 0.5);
     const combined = camFS * (0.3 + 0.7 * litF);
 
-    p.mat.opacity = 0.14 + combined * 0.86;
+    p.mat.opacity = 0.20 + combined * 0.80;
     const s = p.baseScale * (0.88 + camFS * 0.28);
     p.sp.scale.set(s, s, s);
     const br = 0.55 + combined * 0.75;
@@ -533,7 +749,7 @@ function updateLighting() {
     const litF    = Math.max(0, litDot * 0.4 + 0.6);
     const combined = camFS * (0.4 + 0.6 * litF);
 
-    ts.mat.opacity = 0.05 + combined * 0.95;
+    ts.mat.opacity = 0.18 + combined * 0.82;
     const h = ts.baseScale * (1 + ts.hover * 0.12);
     ts.sp.scale.set(h * ts.aspect, h, h);
   });
@@ -775,8 +991,31 @@ function initHandTracking() {
       const pinchDist = Math.sqrt(dx2 * dx2 + dy2 * dy2);
       const isPinching = pinchDist < W * 0.045;
 
+      // ── update CAM_DATA hand fields ──
+      const wrist = lm[0];
+      const tipsIdx = [4, 8, 12, 16, 20];
+      let spreadSum = 0, spreadN = 0;
+      for (let i = 0; i < tipsIdx.length; i++) {
+        for (let j = i + 1; j < tipsIdx.length; j++) {
+          const a = lm[tipsIdx[i]], b = lm[tipsIdx[j]];
+          spreadSum += Math.hypot(a.x - b.x, a.y - b.y);
+          spreadN++;
+        }
+      }
+      const handedness = (results.multiHandedness && results.multiHandedness[0] && results.multiHandedness[0].label) || 'Right';
+      CAM_DATA.HAND_VECTOR_ACTIVE = 1;
+      CAM_DATA.HAND_SIDE = handedness === 'Right' ? 1 : 0;
+      CAM_DATA.POINTER_X = +tip.x.toFixed(2);
+      CAM_DATA.POINTER_Y = +tip.y.toFixed(2);
+      CAM_DATA.POINTER_Z = +(tip.z || 0).toFixed(2);
+      CAM_DATA.PINCH_DIST = +(Math.hypot(tip.x - thumb.x, tip.y - thumb.y)).toFixed(2);
+      CAM_DATA.PINCH_ACTIVE = isPinching ? 1 : 0;
+      CAM_DATA.WRIST_X = +wrist.x.toFixed(2);
+      CAM_DATA.WRIST_Y = +wrist.y.toFixed(2);
+      CAM_DATA.FINGER_SPREAD = +(spreadSum / spreadN).toFixed(2);
+
       if (isPinching) {
-        handDot.style.borderColor = '#ff44aacc';
+        handDot.style.borderColor = '#00ffcccc';
         if (!lastPinchState) {
           pinchStartX = px; pinchStartY = py;
           playRotateWhoosh();
@@ -788,7 +1027,7 @@ function initHandTracking() {
           pinchStartX = px; pinchStartY = py;
         }
       } else {
-        handDot.style.borderColor = '#aa44ff66';
+        handDot.style.borderColor = '#44aaff66';
         lastPinchState = false;
         pinchStartX = null;
         pinchStartY = null;
@@ -804,12 +1043,103 @@ function initHandTracking() {
         ch.style.display = 'block';
         inputModeEl.textContent = 'INPUT: MOUSE';
       }
+      CAM_DATA.HAND_VECTOR_ACTIVE = 0;
+      CAM_DATA.HAND_SIDE = 0;
+      CAM_DATA.POINTER_X = 0; CAM_DATA.POINTER_Y = 0; CAM_DATA.POINTER_Z = 0;
+      CAM_DATA.PINCH_DIST = 0; CAM_DATA.PINCH_ACTIVE = 0;
+      CAM_DATA.WRIST_X = 0; CAM_DATA.WRIST_Y = 0; CAM_DATA.FINGER_SPREAD = 0;
     }
   });
 
+  // ── FaceMesh (parallel to Hands) ──
+  let faceMesh = null;
+  if (typeof FaceMesh !== 'undefined') {
+    faceMesh = new FaceMesh({
+      locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`,
+    });
+    faceMesh.setOptions({
+      maxNumFaces: 1,
+      refineLandmarks: false,
+      minDetectionConfidence: 0.6,
+      minTrackingConfidence: 0.5,
+    });
+
+    const stabWin = [];
+    let lastFaceCx = null, lastFaceCy = null;
+
+    faceMesh.onResults(res => {
+      if (res.multiFaceLandmarks && res.multiFaceLandmarks.length > 0) {
+        const lm = res.multiFaceLandmarks[0];
+
+        let sx = 0, sy = 0, minX = 1, maxX = 0, minY = 1, maxY = 0;
+        for (let i = 0; i < lm.length; i++) {
+          sx += lm[i].x; sy += lm[i].y;
+          if (lm[i].x < minX) minX = lm[i].x;
+          if (lm[i].x > maxX) maxX = lm[i].x;
+          if (lm[i].y < minY) minY = lm[i].y;
+          if (lm[i].y > maxY) maxY = lm[i].y;
+        }
+        const cxF = sx / lm.length;
+        const cyF = sy / lm.length;
+        const sizeF = Math.max(maxX - minX, maxY - minY);
+        const proximity = Math.max(0, Math.min(1, (sizeF - 0.15) / 0.45));
+
+        // head yaw via cheeks (234 left, 454 right)
+        const lc = lm[234], rc = lm[454];
+        const eyeMidX = (lc.x + rc.x) / 2;
+        const yaw = Math.max(-1, Math.min(1, (cxF - eyeMidX) * 8));
+
+        // head pitch via forehead (10) vs chin (152)
+        const fh = lm[10], chin = lm[152];
+        const faceH = Math.max(0.001, chin.y - fh.y);
+        const pitch = Math.max(-1, Math.min(1, ((cyF - fh.y) / faceH - 0.5) * 4));
+
+        // eye openness — left eye (159 top, 145 bottom), right eye (386 top, 374 bottom)
+        const eyeL = Math.abs(lm[159].y - lm[145].y);
+        const eyeR = Math.abs(lm[386].y - lm[374].y);
+        const eyeOpen = ((eyeL + eyeR) / 2) / faceH;
+
+        // mouth open — upper lip 13, lower lip 14
+        const mouth = Math.abs(lm[13].y - lm[14].y) / faceH;
+
+        // stability — sliding window of center delta
+        if (lastFaceCx !== null) {
+          const d = Math.hypot(cxF - lastFaceCx, cyF - lastFaceCy);
+          stabWin.push(d);
+          if (stabWin.length > 10) stabWin.shift();
+        }
+        lastFaceCx = cxF; lastFaceCy = cyF;
+        const stab = stabWin.length ? (stabWin.reduce((a, b) => a + b, 0) / stabWin.length) : 0;
+
+        CAM_DATA.FACE_LOCK = 1;
+        CAM_DATA.FACE_X = +cxF.toFixed(2);
+        CAM_DATA.FACE_Y = +cyF.toFixed(2);
+        CAM_DATA.FACE_SIZE = +sizeF.toFixed(2);
+        CAM_DATA.PROXIMITY_INDEX = +proximity.toFixed(2);
+        CAM_DATA.HEAD_YAW = +yaw.toFixed(2);
+        CAM_DATA.HEAD_PITCH = +pitch.toFixed(2);
+        CAM_DATA.EYE_OPENNESS = +eyeOpen.toFixed(2);
+        CAM_DATA.MOUTH_OPEN = +mouth.toFixed(2);
+        CAM_DATA.FACE_STABILITY = +stab.toFixed(2);
+      } else {
+        stabWin.length = 0;
+        lastFaceCx = null; lastFaceCy = null;
+        CAM_DATA.FACE_LOCK = 0;
+        CAM_DATA.FACE_X = 0; CAM_DATA.FACE_Y = 0;
+        CAM_DATA.FACE_SIZE = 0; CAM_DATA.PROXIMITY_INDEX = 0;
+        CAM_DATA.HEAD_YAW = 0; CAM_DATA.HEAD_PITCH = 0;
+        CAM_DATA.EYE_OPENNESS = 0; CAM_DATA.MOUTH_OPEN = 0;
+        CAM_DATA.FACE_STABILITY = 0;
+      }
+    });
+  }
+
   if (typeof Camera !== 'undefined') {
     const cam = new Camera(videoEl, {
-      onFrame: async () => { await hands.send({ image: videoEl }); },
+      onFrame: async () => {
+        await hands.send({ image: videoEl });
+        if (faceMesh) await faceMesh.send({ image: videoEl });
+      },
       width: 320, height: 240,
     });
     cam.start()
@@ -831,11 +1161,11 @@ const scanData = Array.from({ length: 60 }, () => Math.random());
 
 function drawScan(t) {
   sctx.clearRect(0, 0, 172, 80);
-  sctx.fillStyle = 'rgba(20,0,35,0.6)';
+  sctx.fillStyle = 'rgba(0,20,35,0.6)';
   sctx.fillRect(0, 0, 172, 80);
 
   // grid lines
-  sctx.strokeStyle = 'rgba(100,0,180,0.15)';
+  sctx.strokeStyle = 'rgba(0,100,180,0.15)';
   sctx.lineWidth = 0.5;
   for (let i = 0; i < 5; i++) {
     sctx.beginPath(); sctx.moveTo(0, i * 20); sctx.lineTo(172, i * 20); sctx.stroke();
@@ -846,7 +1176,7 @@ function drawScan(t) {
   if (scanData.length > 60) scanData.shift();
 
   sctx.beginPath();
-  sctx.strokeStyle = 'rgba(180,80,255,0.75)';
+  sctx.strokeStyle = 'rgba(0,200,255,0.75)';
   sctx.lineWidth = 1;
   scanData.forEach((v, i) => {
     const x = i * (172 / 60), y = 72 - v * 62;
@@ -856,12 +1186,12 @@ function drawScan(t) {
 
   // fill under waveform
   sctx.lineTo(172, 80); sctx.lineTo(0, 80); sctx.closePath();
-  sctx.fillStyle = 'rgba(120,0,200,0.12)';
+  sctx.fillStyle = 'rgba(0,120,200,0.12)';
   sctx.fill();
 
   // sweep line
   const scanHead = (t * 60) % 172;
-  sctx.strokeStyle = 'rgba(255,100,200,0.55)';
+  sctx.strokeStyle = 'rgba(0,200,255,0.55)';
   sctx.lineWidth = 1;
   sctx.beginPath(); sctx.moveTo(scanHead, 0); sctx.lineTo(scanHead, 80); sctx.stroke();
 }
@@ -936,6 +1266,30 @@ function animate() {
 
   updateLighting();
 
+  // ---- equator ring + pole markers: per-frame face/back opacity ----
+  {
+    const camDirLocal = new THREE.Vector3(0, 0, 1).applyQuaternion(camera.quaternion);
+
+    // Equator ring: per-segment opacity & brightness based on midpoint depth
+    const _mid = new THREE.Vector3();
+    equatorSegments.forEach(seg => {
+      _mid.copy(seg.userData.localMid).applyQuaternion(group.quaternion);
+      const t = Math.max(0, Math.min(1, (_mid.z + RADIUS) / (2 * RADIUS)));
+      seg.material.opacity = 0.22 + t * 0.68;
+      const br = 0.45 + t * 0.55;
+      seg.material.color.setRGB(0, 0.898 * br, 1.0 * br);
+    });
+
+    const wp = new THREE.Vector3();
+    [poleNorth, poleSouth].forEach(p => {
+      p.getWorldPosition(wp);
+      const nx = wp.x / RADIUS, ny = wp.y / RADIUS, nz = wp.z / RADIUS;
+      const camDot = nx * camDirLocal.x + ny * camDirLocal.y + nz * camDirLocal.z;
+      const camF = Math.max(0, (camDot + 0.35) / 1.35);
+      p.material.opacity = 0.28 + camF * 0.62;
+    });
+  }
+
   // raycasting — hover detection
   const m2 = new THREE.Vector2(mouseNorm.x, mouseNorm.y);
   raycaster.setFromCamera(m2, camera);
@@ -961,7 +1315,6 @@ function animate() {
         document.getElementById('prof-st').textContent = collected >= 6 ? 'COMPLETE' : 'BUILDING';
 
         if (collected === 6) {
-          document.getElementById('sbar').textContent = 'EXTRACTION COMPLETE — ALL BEHAVIORAL SIGNATURES ACQUIRED';
           playAllClearSound();
         } else {
           playExtractSound();

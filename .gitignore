@@ -3,3 +3,10 @@ node_modules/
 *.log
 .vscode/
 .idea/
+Thumbs.db
+npm-debug.log*
+.claude/
+.env
+.env.local
+dist/
+build/

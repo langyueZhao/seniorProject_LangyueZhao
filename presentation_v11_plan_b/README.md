@@ -19,6 +19,13 @@ Senior Project · Scene 03 — Behavioral Extraction System 的演示版本。
 
 ---
 
+## 文件说明
+
+- `scene3_v11.html` — 展示版本(已优化,60fps)
+- `scene3_v10_original.html` — 优化前的原始版本,仅作历史参考,不要运行
+
+---
+
 ## 怎么启动
 
 **必须通过本地 HTTP 服务器打开**,不要直接双击。浏览器的 `getUserMedia`(摄像头)在 `file://` 协议下会被拒绝。

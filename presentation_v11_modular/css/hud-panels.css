@@ -1,0 +1,51 @@
+/* ── LEFT SCAN PANEL ───────────────────────────────────────────── */
+#scan-panel {
+  position: absolute; left: 36px; top: 50%; transform: translateY(-50%);
+  width: 172px; pointer-events: none;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.sp-block {
+  border: 0.5px solid #0077cc55;
+  background: rgba(0, 40, 60, 0.55);
+  padding: 9px 11px;
+}
+.sp-label  { font-size: 9px; letter-spacing: .2em; color: #44aaff99; margin-bottom: 5px; text-transform: uppercase; }
+.sp-value  { font-size: 12px; letter-spacing: .12em; color: #88ccff; font-weight: bold; }
+.sp-bar-wrap { width: 100%; height: 3px; background: #00334422; margin-top: 5px; }
+.sp-bar    { height: 100%; background: linear-gradient(90deg, #0066cc, #00ffcc); transition: width .6s; }
+.sp-micro  { font-size: 9px; color: #0077cc88; letter-spacing: .13em; margin-top: 4px; }
+#scan-canvas { width: 100%; height: 80px; display: block; margin-top: 2px; }
+.sp-list   { list-style: none; }
+.sp-list li {
+  font-size: 9px; letter-spacing: .13em; color: #3388cc66;
+  border-left: 1.5px solid #0066cc44;
+  padding-left: 6px; margin-bottom: 5px; line-height: 1.5;
+}
+.sp-list li.active { color: #88ccffcc; border-left-color: #44aaff; }
+
+/* ── RIGHT PANEL ───────────────────────────────────────────────── */
+#right-panel {
+  position: absolute; right: 36px; top: 50%; transform: translateY(-50%);
+  width: 164px; pointer-events: none;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.rp-block      { border: 0.5px solid #00ccaa33; background: rgba(0, 50, 40, 0.55); padding: 9px 11px; }
+.rp-label      { font-size: 9px; letter-spacing: .2em; color: #00ccaa77; margin-bottom: 5px; }
+.rp-value      { font-size: 14px; letter-spacing: .08em; color: #44ffdd; font-weight: bold; }
+.rp-sub        { font-size: 9px; color: #00997788; letter-spacing: .12em; margin-top: 2px; }
+.rp-meter      { width: 100%; height: 2px; background: #00331122; margin-top: 6px; }
+.rp-meter-fill { height: 100%; background: #00ccaa; transition: width .6s; }
+
+.collected-list    { list-style: none; margin-top: 2px; }
+.collected-list li {
+  font-size: 9px; letter-spacing: .15em; color: #00ccaa44;
+  padding: 3px 0; border-bottom: 0.5px solid #00ccaa11; transition: color .4s;
+}
+.collected-list li.done { color: #44ffddcc; }
+
+/* ── SESSION METRICS (right panel) ─────────────────────────────── */
+.session-metrics {
+  font-size: 9px; color: #00ccaa66; letter-spacing: .11em; line-height: 2.0;
+}
+.session-metrics span { color: #44ffdd; }
+.archive-value { font-size: 10px; color: #44ffdd; }

@@ -1,0 +1,28 @@
+/* ── RESET & BASE ──────────────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; background: #00080f; overflow: hidden; }
+
+/* ── MAIN CONTAINER ────────────────────────────────────────────── */
+#s3 {
+  position: relative;
+  width: 100vw; height: 100vh;
+  background: #00080f;
+  overflow: hidden;
+  cursor: none;
+  font-family: 'Courier New', monospace;
+}
+#c { display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+/* ── CROSSHAIR (mouse cursor) ──────────────────────────────────── */
+#ch {
+  position: absolute; pointer-events: none;
+  width: 28px; height: 28px; transform: translate(-50%, -50%);
+}
+#ch::before, #ch::after { content: ''; position: absolute; background: #ff2233cc; }
+#ch::before { top: 50%; left: 0; right: 0; height: .5px; transform: translateY(-50%); }
+#ch::after  { left: 50%; top: 0; bottom: 0; width: .5px; transform: translateX(-50%); }
+.chc { position: absolute; width: 6px; height: 6px; border-color: #ff2233ee; border-style: solid; }
+.ctl { top: 0;    left: 0;  border-width: 1px 0 0 1px; }
+.ctr { top: 0;    right: 0; border-width: 1px 1px 0 0; }
+.cbl { bottom: 0; left: 0;  border-width: 0 0 1px 1px; }
+.cbr { bottom: 0; right: 0; border-width: 0 1px 1px 0; }

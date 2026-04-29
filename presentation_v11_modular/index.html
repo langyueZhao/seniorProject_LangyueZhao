@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCENE 03 — BEHAVIORAL EXTRACTION SYSTEM</title>
+
+  <!-- Stylesheets (split by purpose) -->
+  <link rel="stylesheet" href="css/core.css">
+  <link rel="stylesheet" href="css/hud-panels.css">
+  <link rel="stylesheet" href="css/corners.css">
+</head>
+
+<body>
+<div id="s3">
+
+  <!-- ── 3D CANVAS ───────────────────────────────────────────── -->
+  <canvas id="c"></canvas>
+
+  <!-- ── LEFT SCAN PANEL ─────────────────────────────────────── -->
+  <div id="scan-panel">
+    <div class="sp-block">
+      <div class="sp-label">SUBJECT SCAN</div>
+      <canvas id="scan-canvas"></canvas>
+      <div class="sp-micro">NEURAL_SIGNATURE: ACTIVE</div>
+    </div>
+    <div class="sp-block">
+      <div class="sp-label">BEHAVIORAL INDEX</div>
+      <div class="sp-value" id="beh-idx">0.000</div>
+      <div class="sp-bar-wrap"><div class="sp-bar" id="beh-bar" style="width:0%"></div></div>
+      <div class="sp-micro">THRESHOLD: 0.720</div>
+    </div>
+    <div class="sp-block">
+      <div class="sp-label">ACTIVE VECTORS</div>
+      <ul class="sp-list" id="vec-list">
+        <li class="active">OCULAR FIXATION</li>
+        <li class="active">DWELL_PATTERN</li>
+        <li>MICRO_EXPRESSION</li>
+        <li>PROXIMITY INDEX</li>
+        <li>GAZE VELOCITY</li>
+      </ul>
+    </div>
+    <div class="sp-block">
+      <div class="sp-label">SIGNAL CONFIDENCE</div>
+      <div class="sp-value"><span id="sig-conf">--</span>%</div>
+      <div class="sp-bar-wrap"><div class="sp-bar" id="sig-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ─────────────────────────────────────────── -->
+  <div id="right-panel">
+    <div class="rp-block">
+      <div class="rp-label">EXTRACTION STATUS</div>
+      <div class="rp-value"><span id="tc">0</span>/6</div>
+      <div class="rp-sub">TARGETS ACQUIRED</div>
+      <div class="rp-meter"><div class="rp-meter-fill" id="ext-meter" style="width:0%"></div></div>
+    </div>
+    <div class="rp-block">
+      <div class="rp-label">EXTRACTED MARKERS</div>
+      <ul class="collected-list" id="col-list"></ul>
+    </div>
+    <div class="rp-block">
+      <div class="rp-label">SESSION METRICS</div>
+      <div class="session-metrics">
+        DWELL: <span id="dt">00:00</span><br>
+        ROTATION: <span id="rx">000</span>°<br>
+        FRAME: <span id="fr">0000</span><br>
+        NODES: <span>950</span>
+      </div>
+    </div>
+    <div class="rp-block">
+      <div class="rp-label">ARCHIVE NODE</div>
+      <div class="rp-value archive-value">192.168.0.1</div>
+      <div class="rp-sub">UPLINK: ESTABLISHED</div>
+    </div>
+  </div>
+
+  <!-- ── HUD CORNERS ─────────────────────────────────────────── -->
+  <div class="hud" id="htl">
+    BEHAVIORAL_EXTRACTION_SYS<br>
+    CORE v3.3.0 — SCENE_03<br>
+    STATUS: <span class="hud-highlight-purple">SCANNING</span>
+  </div>
+  <div class="hud" id="htr">
+    SUBJECT: VIEWER_01<br>
+    PROFILE: <span id="prof-st" class="hud-highlight-pink">BUILDING</span><br>
+    RISK: <span class="hud-highlight-red">LOW</span>
+  </div>
+  <div class="hud" id="hbl">
+    STREAM_IN: <span class="hud-highlight-violet">LIVE</span><br>
+    LATENCY: 4ms
+  </div>
+  <div class="hud" id="hbr">
+    MODE: VOLUMETRIC<br>
+    LAYER: <span id="lay-n" class="hud-highlight-pink">03</span>
+  </div>
+
+  <!-- ── HAND TRACKING OVERLAY ───────────────────────────────── -->
+  <div id="cam-wrap"><canvas id="cam-preview"></canvas></div>
+  <div id="input-mode">INPUT: MOUSE</div>
+  <div id="hand-dot"><div class="hd-ring"></div></div>
+
+  <!-- ── CROSSHAIR ───────────────────────────────────────────── -->
+  <div id="ch">
+    <div class="chc ctl"></div><div class="chc ctr"></div>
+    <div class="chc cbl"></div><div class="chc cbr"></div>
+  </div>
+
+</div>
+
+<!-- ── EXTERNAL DEPENDENCIES (CDN) ─────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+
+<!-- ── APPLICATION (load order matters — each file extends window.S3) ── -->
+<script src="js/config.js"></script>        <!-- constants, CAM_FIELDS, LIGHT_DIR -->
+<script src="js/camera-data.js"></script>   <!-- live CAM_DATA store -->
+<script src="js/scene.js"></script>         <!-- renderer, scene, camera, group -->
+<script src="js/texture-pool.js"></script>  <!-- shared per-field textures (v11 OPT 1) -->
+<script src="js/sphere.js"></script>        <!-- particles + rings + equator + poles + stand -->
+<script src="js/audio.js"></script>         <!-- Web Audio engine -->
+<script src="js/input.js"></script>         <!-- mouse handlers + setPointer -->
+<script src="js/hands.js"></script>         <!-- MediaPipe Hands + FaceMesh -->
+<script src="js/lighting.js"></script>      <!-- per-frame face/back shading -->
+<script src="js/targets.js"></script>       <!-- async-loads data/targets.json + dwell collection -->
+<script src="js/hud.js"></script>           <!-- scan canvas + 800ms metrics tick -->
+<script src="js/main.js"></script>          <!-- bootstrap + animation loop + resize -->
+</body>
+</html>

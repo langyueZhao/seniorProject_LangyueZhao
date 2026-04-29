@@ -1,0 +1,37 @@
+/* ── HUD CORNERS ───────────────────────────────────────────────── */
+.hud { position: absolute; pointer-events: none; font-size: 9px; letter-spacing: .13em; line-height: 1.85; }
+#htl { top: 28px;    left: 36px;  color: #3388cc77; }
+#htr { top: 28px;    right: 36px; text-align: right; color: #00ccaa66; }
+#hbl { bottom: 32px; left: 36px;  color: #3388cc66; }
+#hbr { bottom: 32px; right: 36px; text-align: right; color: #00ccaa55; }
+
+.hud-highlight-purple { color: #88ccff; }
+.hud-highlight-pink   { color: #44ffdd; }
+.hud-highlight-red    { color: #ff4466; }
+.hud-highlight-violet { color: #66aaff; }
+
+/* ── CAMERA / HAND TRACKING OVERLAY ────────────────────────────── */
+#cam-wrap {
+  position: absolute; bottom: 52px; right: 36px;
+  pointer-events: none; z-index: 10;
+}
+#cam-video   { display: none; }
+#cam-preview { width: 96px; height: 72px; border: 0.5px solid #44aaff44; opacity: 0.55; transform: scaleX(-1); }
+#input-mode {
+  position: absolute; bottom: 32px; right: 36px;
+  font-size: 8px; letter-spacing: .18em; color: #44aaff66;
+  pointer-events: none; white-space: nowrap; margin-top: 4px;
+}
+
+/* ── HAND DOT (hand-tracking cursor) ──────────────────────────── */
+#hand-dot {
+  position: absolute; width: 18px; height: 18px;
+  pointer-events: none; transform: translate(-50%, -50%); display: none;
+}
+#hand-dot::before, #hand-dot::after { content: ''; position: absolute; background: #00ffcccc; }
+#hand-dot::before { top: 50%; left: 0; right: 0; height: .5px; transform: translateY(-50%); }
+#hand-dot::after  { left: 50%; top: 0; bottom: 0; width: .5px; transform: translateX(-50%); }
+.hd-ring {
+  position: absolute; width: 18px; height: 18px;
+  border: 1px solid #00ffcc88; border-radius: 50%; top: 0; left: 0;
+}

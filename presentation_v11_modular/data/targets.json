@@ -1,0 +1,10 @@
+{
+  "targets": [
+    { "label": "ATTENTION", "color": "#ffffff", "glow": "rgba(255,255,255,0.75)", "rgb": [255, 255, 255] },
+    { "label": "REACTION",  "color": "#88ccff", "glow": "rgba(80,180,255,0.7)",   "rgb": [136, 204, 255] },
+    { "label": "DWELL",     "color": "#00ffcc", "glow": "rgba(0,255,200,0.65)",   "rgb": [0,   255, 204] },
+    { "label": "PATTERN",   "color": "#55aaff", "glow": "rgba(60,150,255,0.6)",   "rgb": [85,  170, 255] },
+    { "label": "87",        "color": "#aaeeff", "glow": "rgba(150,230,255,0.65)", "rgb": [170, 238, 255] },
+    { "label": "42",        "color": "#44ddff", "glow": "rgba(60,200,255,0.65)",  "rgb": [68,  221, 255] }
+  ]
+}
